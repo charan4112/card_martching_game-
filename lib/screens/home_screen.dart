@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,13 +9,16 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Card Matching Game'),
-        centerTitle: true,
         backgroundColor: Colors.purpleAccent,
+        centerTitle: true,
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/game');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const GameScreen()),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.purpleAccent,
