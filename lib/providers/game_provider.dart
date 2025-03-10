@@ -7,27 +7,27 @@ class GameProvider with ChangeNotifier {
   int moves = 0;
   int score = 0;
   int lives = 5; 
-  int timeTaken = 0; // New Timer Variable
+  int timeTaken = 0;
+  int hints = 3;  // New Hint Feature
   CardModel? firstCard;
   CardModel? secondCard;
   Timer? timer;
 
-  // Initialize cards with sample images and shuffle
+  // Initialize cards with Google-hosted image links
   void initializeCards() {
     List<String> images = [
-      'assets/images/cat.png',
-      'assets/images/dog.png',
-      'assets/images/lion.png',
-      'assets/images/tiger.png'
+      'https://i.imgur.com/XdYxvXS.png',
+      'https://i.imgur.com/AjP8qEe.png',
+      'https://i.imgur.com/NWhxpU7.png',
+      'https://i.imgur.com/VmSbGZP.png'
     ];
 
     cards = [...images, ...images]
-        .map((img) => CardModel(imagePath: img))
+        .map((img) => CardModel(imageUrl: img))
         .toList();
 
     cards.shuffle();
 
-    // Start Timer when game starts
     timeTaken = 0;
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       timeTaken++;
@@ -37,7 +37,7 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Logic for card flipping and matching
+  // Card Flipping and Matching Logic
   void flipCard(CardModel card) {
     if (card.isFlipped || card.isMatched) return;
 
@@ -56,28 +56,21 @@ class GameProvider with ChangeNotifier {
   void checkMatch() async {
     moves++;
 
-    if (firstCard!.imagePath == secondCard!.imagePath) {
+    if (firstCard!.imageUrl == secondCard!.imageUrl) {
       firstCard!.isMatched = true;
       secondCard!.isMatched = true;
-      
-      // Add bonus if matched quickly
-      if (timeTaken <= 3) {
-        score += 15; // Quick match bonus
-      } else {
-        score += 10; // Standard points for a correct match
-      }
+      score += 10;
     } else {
       await Future.delayed(const Duration(seconds: 1));
       firstCard!.isFlipped = false;
       secondCard!.isFlipped = false;
-      score -= 5; // Penalty for incorrect match
-      lives--;     // Lose a life on incorrect match
+      score -= 5;
+      lives--;
     }
 
     firstCard = null;
     secondCard = null;
 
-    // Stop Timer if game is completed
     if (checkWinCondition()) {
       timer?.cancel();
     }
@@ -85,17 +78,36 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Check for Win Condition
+  // Hint System - Reveal one card for 3 seconds
+  void useHint() {
+    if (hints == 0) return;
+
+    hints--;
+
+    final hiddenCards = cards.where((card) => !card.isFlipped && !card.isMatched).toList();
+    if (hiddenCards.isNotEmpty) {
+      final hintCard = hiddenCards[0];
+      hintCard.isFlipped = true;
+
+      Future.delayed(const Duration(seconds: 3), () {
+        hintCard.isFlipped = false;
+        notifyListeners();
+      });
+    }
+
+    notifyListeners();
+  }
+
   bool checkWinCondition() {
     return cards.every((card) => card.isMatched);
   }
 
-  // Reset the Game
   void resetGame() {
     initializeCards();
     moves = 0;
     score = 0;
     lives = 5;
+    hints = 3;
     timeTaken = 0;
     notifyListeners();
   }

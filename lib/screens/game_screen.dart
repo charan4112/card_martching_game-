@@ -31,16 +31,14 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Column(
         children: [
-          // Score & Moves Display
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Score: ${gameProvider.score} | Moves: ${gameProvider.moves} | Lives: ${gameProvider.lives} | Time: ${gameProvider.timeTaken}s',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Score: ${gameProvider.score} | Moves: ${gameProvider.moves} | Lives: ${gameProvider.lives} | Hints: ${gameProvider.hints} | Time: ${gameProvider.timeTaken}s',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
 
-          // Game Board
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -63,7 +61,7 @@ class _GameScreenState extends State<GameScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: card.isFlipped
-                        ? Image.asset(card.imagePath)
+                        ? Image.network(card.imageUrl)
                         : const Icon(Icons.question_mark, size: 36, color: Colors.white),
                   ),
                 );
@@ -71,15 +69,16 @@ class _GameScreenState extends State<GameScreen> {
             ),
           ),
 
-          // Restart Button
           ElevatedButton(
-            onPressed: () {
-              gameProvider.resetGame();
-            },
+            onPressed: () => gameProvider.useHint(),
+            child: const Text('🔍 Use Hint'),
+          ),
+
+          ElevatedButton(
+            onPressed: () => gameProvider.resetGame(),
             child: const Text('Restart Game'),
           ),
 
-          // Victory Message
           if (gameProvider.checkWinCondition())
             const Padding(
               padding: EdgeInsets.all(10.0),

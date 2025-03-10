@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CardModel {
-  final String imagePath;
+  final String imageUrl;
   bool isFlipped;
   bool isMatched;
 
   CardModel({
-    required this.imagePath,
+    required this.imageUrl,
     this.isFlipped = false,
     this.isMatched = false,
   });
