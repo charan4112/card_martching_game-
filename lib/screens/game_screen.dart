@@ -35,7 +35,7 @@ class _GameScreenState extends State<GameScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Score: ${gameProvider.score} | Moves: ${gameProvider.moves} | Lives: ${gameProvider.lives}',
+              'Score: ${gameProvider.score} | Moves: ${gameProvider.moves} | Lives: ${gameProvider.lives} | Time: ${gameProvider.timeTaken}s',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
@@ -78,6 +78,16 @@ class _GameScreenState extends State<GameScreen> {
             },
             child: const Text('Restart Game'),
           ),
+
+          // Victory Message
+          if (gameProvider.checkWinCondition())
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                '🎯 Victory! All pairs matched!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+              ),
+            ),
         ],
       ),
     );
