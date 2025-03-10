@@ -6,9 +6,11 @@ class GameProvider with ChangeNotifier {
   List<CardModel> cards = [];
   int moves = 0;
   int score = 0;
-  int lives = 5; 
+  int lives = 5;
   int timeTaken = 0;
-  int hints = 3;  // New Hint Feature
+  int hints = 3;
+  int streak = 0;  // New Streak Bonus System
+  List<int> leaderboard = [];
   CardModel? firstCard;
   CardModel? secondCard;
   Timer? timer;
@@ -59,13 +61,18 @@ class GameProvider with ChangeNotifier {
     if (firstCard!.imageUrl == secondCard!.imageUrl) {
       firstCard!.isMatched = true;
       secondCard!.isMatched = true;
-      score += 10;
+      
+      // Streak Bonus
+      streak++;
+      score += (10 + (streak * 2)); // Consecutive correct match bonus
+
     } else {
       await Future.delayed(const Duration(seconds: 1));
       firstCard!.isFlipped = false;
       secondCard!.isFlipped = false;
       score -= 5;
       lives--;
+      streak = 0; // Reset streak if incorrect
     }
 
     firstCard = null;
@@ -73,6 +80,9 @@ class GameProvider with ChangeNotifier {
 
     if (checkWinCondition()) {
       timer?.cancel();
+      leaderboard.add(score);
+      leaderboard.sort((a, b) => b.compareTo(a)); // Sort in descending order
+      leaderboard = leaderboard.take(5).toList(); // Top 5 scores only
     }
 
     notifyListeners();
@@ -109,6 +119,7 @@ class GameProvider with ChangeNotifier {
     lives = 5;
     hints = 3;
     timeTaken = 0;
+    streak = 0;
     notifyListeners();
   }
 }
