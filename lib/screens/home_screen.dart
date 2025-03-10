@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../utils/theme_provider.dart';
-import 'game_screen.dart';
+import '../providers/theme_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context); // ✅ Correct Provider usage
 
     return Scaffold(
       appBar: AppBar(
@@ -23,10 +22,7 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const GameScreen()),
-            );
+            Navigator.pushNamed(context, '/game');
           },
           child: const Text('Start Game'),
         ),

@@ -9,7 +9,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GameProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),  // ✅ Ensure this is here
       ],
       child: const CardMatchingGame(),
     ),
@@ -21,15 +21,17 @@ class CardMatchingGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
-    return MaterialApp(
-      title: 'Card Matching Game',
-      theme: themeProvider.isDarkMode
-          ? ThemeData.dark()
-          : ThemeData.light(),
-      home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Card Matching Game',
+          theme: themeProvider.isDarkMode
+              ? ThemeData.dark()
+              : ThemeData.light(),
+          home: const HomeScreen(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
