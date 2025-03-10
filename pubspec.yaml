@@ -1,5 +1,5 @@
 name: card_matching_game
-description: "A feature-rich, animated Flutter card-matching game with enhanced UI, leaderboard, pause/resume, and dark/light mode."
+description: "A feature-rich Flutter card-matching game using online image links."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -11,12 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # UI Enhancements
   cupertino_icons: ^1.0.8
-  confetti: ^0.8.0            # Victory celebration effect
-  audioplayers: ^6.3.0        # Sound effects for card flip, match, and victory
-  vibration: ^3.1.3           # Device vibration for haptic feedback
-  provider: ^6.1.2            # State management for better UI flow
+  confetti: ^0.8.0
+  audioplayers: ^6.3.0
+  vibration: ^3.1.3
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -25,20 +24,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # Image Assets (Using URLs instead of Local Assets)
-  assets:
-    - assets/images/       # Add this if you wish to add future local assets
-
-  # Fonts for UI Improvement
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: fonts/Poppins-Regular.ttf
-        - asset: fonts/Poppins-Bold.ttf
-          weight: 700
-    - family: Roboto
-      fonts:
-        - asset: fonts/Roboto-Regular.ttf
-        - asset: fonts/Roboto-Bold.ttf
-          weight: 700

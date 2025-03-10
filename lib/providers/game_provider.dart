@@ -19,10 +19,10 @@ class GameProvider with ChangeNotifier {
   // Initialize cards with Google-hosted image links
   void initializeCards() {
     List<String> images = [
-      'https://i.imgur.com/XdYxvXS.png',
-      'https://i.imgur.com/AjP8qEe.png',
-      'https://i.imgur.com/NWhxpU7.png',
-      'https://i.imgur.com/VmSbGZP.png'
+      'https://i.imgur.com/XdYxvXS.png', // Cat
+      'https://i.imgur.com/AjP8qEe.png', // Dog
+      'https://i.imgur.com/NWhxpU7.png', // Lion
+      'https://i.imgur.com/VmSbGZP.png'  // Tiger
     ];
 
     cards = [...images, ...images]
@@ -70,10 +70,8 @@ class GameProvider with ChangeNotifier {
     if (firstCard!.imageUrl == secondCard!.imageUrl) {
       firstCard!.isMatched = true;
       secondCard!.isMatched = true;
-      
       streak++;
       score += (10 + (streak * 2)); // Streak Bonus
-
     } else {
       await Future.delayed(const Duration(seconds: 1));
       firstCard!.isFlipped = false;

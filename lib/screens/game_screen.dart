@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
-import 'leaderboard_screen.dart'; // ✅ Correct Import
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
-
-  @override
-  State<GameScreen> createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GameProvider>(context, listen: false).initializeCards();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,29 +17,34 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Column(
         children: [
-          if (gameProvider.checkWinCondition())
-            const Center(
-              child: Text(
-                '🎉 Congratulations! You won!',
-                style: TextStyle(fontSize: 24, color: Colors.green),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
+              itemCount: gameProvider.cards.length,
+              itemBuilder: (context, index) {
+                final card = gameProvider.cards[index];
+
+                return GestureDetector(
+                  onTap: () => gameProvider.flipCard(card),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: card.isFlipped
+                          ? Colors.orangeAccent
+                          : Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: card.isFlipped
+                        ? Image.network(card.imageUrl)  // ✅ Google Image Links
+                        : const Icon(Icons.question_mark, size: 36, color: Colors.white),
+                  ),
+                );
+              },
             ),
-
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LeaderboardScreen(),  // ✅ Corrected Constructor
-                ),
-              );
-            },
-            child: const Text('🏅 View Leaderboard'),
-          ),
-
-          ElevatedButton(
-            onPressed: () => gameProvider.resetGame(),
-            child: const Text('🔄 Restart Game'),
           ),
         ],
       ),
