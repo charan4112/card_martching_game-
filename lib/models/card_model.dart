@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class CardModel {
   final String imageUrl;
   bool isFlipped;

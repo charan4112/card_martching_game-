@@ -9,8 +9,9 @@ class GameProvider with ChangeNotifier {
   int lives = 5;
   int timeTaken = 0;
   int hints = 3;
-  int streak = 0;  // New Streak Bonus System
+  int streak = 0;
   List<int> leaderboard = [];
+  bool isPaused = false;
   CardModel? firstCard;
   CardModel? secondCard;
   Timer? timer;
@@ -32,16 +33,24 @@ class GameProvider with ChangeNotifier {
 
     timeTaken = 0;
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      timeTaken++;
-      notifyListeners();
+      if (!isPaused) {
+        timeTaken++;
+        notifyListeners();
+      }
     });
 
     notifyListeners();
   }
 
+  // Pause/Resume Feature
+  void togglePause() {
+    isPaused = !isPaused;
+    notifyListeners();
+  }
+
   // Card Flipping and Matching Logic
   void flipCard(CardModel card) {
-    if (card.isFlipped || card.isMatched) return;
+    if (card.isFlipped || card.isMatched || isPaused) return;
 
     card.isFlipped = true;
 
@@ -62,9 +71,8 @@ class GameProvider with ChangeNotifier {
       firstCard!.isMatched = true;
       secondCard!.isMatched = true;
       
-      // Streak Bonus
       streak++;
-      score += (10 + (streak * 2)); // Consecutive correct match bonus
+      score += (10 + (streak * 2)); // Streak Bonus
 
     } else {
       await Future.delayed(const Duration(seconds: 1));
@@ -72,7 +80,7 @@ class GameProvider with ChangeNotifier {
       secondCard!.isFlipped = false;
       score -= 5;
       lives--;
-      streak = 0; // Reset streak if incorrect
+      streak = 0;
     }
 
     firstCard = null;
@@ -81,35 +89,11 @@ class GameProvider with ChangeNotifier {
     if (checkWinCondition()) {
       timer?.cancel();
       leaderboard.add(score);
-      leaderboard.sort((a, b) => b.compareTo(a)); // Sort in descending order
-      leaderboard = leaderboard.take(5).toList(); // Top 5 scores only
+      leaderboard.sort((a, b) => b.compareTo(a));
+      leaderboard = leaderboard.take(5).toList();
     }
 
     notifyListeners();
-  }
-
-  // Hint System - Reveal one card for 3 seconds
-  void useHint() {
-    if (hints == 0) return;
-
-    hints--;
-
-    final hiddenCards = cards.where((card) => !card.isFlipped && !card.isMatched).toList();
-    if (hiddenCards.isNotEmpty) {
-      final hintCard = hiddenCards[0];
-      hintCard.isFlipped = true;
-
-      Future.delayed(const Duration(seconds: 3), () {
-        hintCard.isFlipped = false;
-        notifyListeners();
-      });
-    }
-
-    notifyListeners();
-  }
-
-  bool checkWinCondition() {
-    return cards.every((card) => card.isMatched);
   }
 
   void resetGame() {
@@ -120,6 +104,11 @@ class GameProvider with ChangeNotifier {
     hints = 3;
     timeTaken = 0;
     streak = 0;
+    isPaused = false;
     notifyListeners();
+  }
+
+  bool checkWinCondition() {
+    return cards.every((card) => card.isMatched);
   }
 }

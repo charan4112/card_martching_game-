@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../utils/theme_provider.dart';
 import 'game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,11 +8,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Card Matching Game'),
-        backgroundColor: Colors.purpleAccent,
-        centerTitle: true,
+        actions: [
+          Switch(
+            value: themeProvider.isDarkMode,
+            onChanged: (value) => themeProvider.toggleTheme(),
+          ),
+        ],
       ),
       body: Center(
         child: ElevatedButton(
@@ -20,14 +28,7 @@ class HomeScreen extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const GameScreen()),
             );
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.purpleAccent,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-          ),
-          child: const Text(
-            'Start Game',
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
+          child: const Text('Start Game'),
         ),
       ),
     );

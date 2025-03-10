@@ -12,8 +12,6 @@ class LeaderboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('🏆 Leaderboard'),
-        backgroundColor: Colors.orangeAccent,
-        centerTitle: true,
       ),
       body: ListView.builder(
         itemCount: gameProvider.leaderboard.length,
