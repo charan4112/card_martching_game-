@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-void main() {
-  runApp(const CardMatchingGame());
-}
+void main() => runApp(const CardMatchingGame());
 
 class CardMatchingGame extends StatefulWidget {
   const CardMatchingGame({super.key});
@@ -30,7 +28,10 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
   int lives = 5;
   bool isDarkMode = false;
   bool isPaused = false;
+  bool showVictory = false;
+
   late ConfettiController confettiController;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -47,6 +48,11 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
     lives = 5;
     firstCard = null;
     secondCard = null;
+    showVictory = false;
+  }
+
+  Future<void> playSound(String soundPath) async {
+    await _audioPlayer.play(AssetSource(soundPath));
   }
 
   void flipCard(CardModel card) async {
@@ -56,6 +62,8 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
       card.isFlipped = true;
     });
 
+    playSound('click.mp3');
+
     if (firstCard == null) {
       firstCard = card;
     } else {
@@ -63,15 +71,18 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
       moves++;
 
       if (firstCard!.imageUrl == secondCard!.imageUrl) {
-        // Match found
         setState(() {
           firstCard!.isMatched = true;
           secondCard!.isMatched = true;
           score += 10;
         });
 
+        playSound('match.mp3');
+
         if (cards.every((card) => card.isMatched)) {
           confettiController.play();
+          playSound('victory.mp3');
+          setState(() => showVictory = true);
         }
 
       } else {
@@ -107,15 +118,12 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
       theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Card Matching Game'),
+          title: const Text('🔥 Spicy Card Matching Game 🔥'),
+          backgroundColor: Colors.deepPurpleAccent,
           actions: [
             Switch(
               value: isDarkMode,
-              onChanged: (value) {
-                setState(() {
-                  isDarkMode = value;
-                });
-              },
+              onChanged: (value) => setState(() => isDarkMode = value),
             ),
             IconButton(
               icon: const Icon(Icons.refresh),
@@ -125,13 +133,25 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
         ),
         body: Stack(
           children: [
+            // Background Image for Improved UI
+            Positioned.fill(
+              child: Image.network(
+                'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0',
+                fit: BoxFit.cover,
+              ),
+            ),
+
             Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Score: $score | Moves: $moves | Lives: $lives',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    '🔥 Score: $score | Moves: $moves | Lives: $lives 🔥',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -153,7 +173,7 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: card.isFlipped
-                              ? Image.network(card.imageUrl)
+                              ? Image.network(card.imageUrl, errorBuilder: (_, __, ___) => const Icon(Icons.error))
                               : const Icon(Icons.question_mark, size: 36, color: Colors.white),
                         ),
                       );
@@ -173,6 +193,14 @@ class _CardMatchingGameState extends State<CardMatchingGame> {
                 colors: const [Colors.green, Colors.blue, Colors.pink, Colors.orange],
               ),
             ),
+
+            if (showVictory)
+              const Center(
+                child: Text(
+                  '🎉 YOU WIN! 🎉',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.yellow),
+                ),
+              ),
           ],
         ),
       ),
