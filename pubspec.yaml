@@ -1,5 +1,5 @@
 name: card_matching_game
-description: "An exciting Flutter card-matching game with animations, sound effects, and enhanced UI."
+description: "Card Matching Game with local DB, scoreboard, custom matches, and enhanced UI."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,10 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # UI and Animation Enhancements
-  confetti: ^0.8.0            # Victory confetti effect
-  audioplayers: ^6.3.0        # For sound effects (click, match, victory)
+  sqflite: ^2.2.8
+  path: ^1.9.0
+  confetti: ^0.8.0
+  audioplayers: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -22,9 +22,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # Sound Effects for Enhanced Gameplay
   assets:
+    - assets/images/back.JPG
+    - assets/images/bob.JPG
+    - assets/images/kaaju.JPG
+    - assets/images/raju.JPG
+    - assets/images/sweety.JPG
     - assets/sounds/click.mp3
     - assets/sounds/match.mp3
     - assets/sounds/victory.mp3
