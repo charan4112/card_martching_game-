@@ -9,7 +9,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GameProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),  // Corrected
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: const CardMatchingGame(),
     ),
