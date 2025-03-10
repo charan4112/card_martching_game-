@@ -11,7 +11,7 @@ class GameScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Card Matching Game'),
+        title: const Text('Card Matching Game - In Progress'),
         backgroundColor: Colors.deepPurpleAccent,
         centerTitle: true,
       ),
@@ -39,7 +39,7 @@ class GameScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: card.isFlipped
-                        ? Image.network(card.imageUrl)  // ✅ Google Image Links
+                        ? Image.network(card.imageUrl)
                         : const Icon(Icons.question_mark, size: 36, color: Colors.white),
                   ),
                 );

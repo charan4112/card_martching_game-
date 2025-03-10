@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 import 'providers/game_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/game_screen.dart';  // ✅ Import GameScreen
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GameProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),  // ✅ Ensure this is here
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: const CardMatchingGame(),
     ),
@@ -21,17 +22,18 @@ class CardMatchingGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return MaterialApp(
-          title: 'Card Matching Game',
-          theme: themeProvider.isDarkMode
-              ? ThemeData.dark()
-              : ThemeData.light(),
-          home: const HomeScreen(),
-          debugShowCheckedModeBanner: false,
-        );
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      title: 'Card Matching Game',
+      theme: themeProvider.isDarkMode
+          ? ThemeData.dark()
+          : ThemeData.light(),
+      home: const HomeScreen(),
+      routes: {
+        '/game': (context) => const GameScreen(),  // ✅ Added Route for GameScreen
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
